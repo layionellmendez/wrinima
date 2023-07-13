@@ -1,11 +1,10 @@
 const cacheName = 'wrinima-cache-v1';
 const filesToCache = [
-  '/',
-  '/index.html',
-  '/site.webmanifest',
-  '/favicon.ico',
-  '/android-chrome-192x192.png',
-  '/android-chrome-512x512.png',
+  'index.html',
+  'site.webmanifest',
+  'favicon.ico',
+  'android-chrome-192x192.png',
+  'android-chrome-512x512.png',
 ];
 
 self.addEventListener('install', (event) => {
