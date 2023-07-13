@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es-CR">
+<head>
+    <title>Wrinima</title>
+    <meta name="description" content="Escritura minimalista sin distracciones.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/favicon.ico" id="favicon">
+    <link rel="manifest" href="/site.webmanifest">
+    <style>
+        /* Estilos de las variables CSS */
+        :root {
+            --p: #4C495E; /* Color primario */
+            --s: #FEFCFF; /* Color secundario */
+            --a: #726f78; /* Color de acento */
+        }
+
+        /* Estilos generales */
+        html, body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: var(--p);
+        }
+
+        textarea {
+            font-family: 'Times New Roman', serif;
+            font-size: 18px;
+            min-height: calc(100% - 36px);
+            overflow: auto;
+            width: 100%;
+            max-width: 680px;
+            box-sizing: border-box;
+            padding: 1.25rem 1rem;
+            resize: none;
+            border: none;
+            margin: 36px auto 0;
+            display: block;
+            background-color: var(--p);
+            color: var(--s);
+        }
+        
+        ::placeholder {
+            color: #979797; /* Color del placeholder */
+        }
+        textarea:focus {
+            outline: none;
+        }
+
+        /* Estilos de la cabecera */
+        header {
+            background-color: var(--p);
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1;
+            border-bottom: 1px solid var(--s);
+        }
+
+        .h {
+            font-family: 'Times New Roman', serif;
+            font-size: 18px;
+            color: var(--s);
+            margin-left: 10px;
+        }
+
+        .o {
+            background-color: var(--a);
+            color: white;
+            margin-right: 10px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Times New Roman', serif;
+        }
+
+        /* Estilos del cuadro de diálogo de opciones */
+        .od {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .od.v {
+            display: flex;
+        }
+
+        .odc {
+            background-color: var(--p);
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            max-width: 320px;
+            font-family: 'Times New Roman', serif;
+            color: var(--s);
+        }
+
+        .odc h2 {
+            margin-top: 0;
+        }
+
+        .odc p {
+            margin-bottom: 1em;
+        }
+
+        .odc b {
+            background-color: var(--a);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Times New Roman', serif;
+            margin-top: 10px;
+        }
+
+        .odc b:first-child {
+            margin-top: 0;
+        }
+
+        .odc hr {
+            border: none;
+            border-top: 1px solid var(--s);
+            margin: 20px 0;
+        }
+
+        /* Estilos específicos para dispositivos móviles */
+        @media (max-width: 480px) {
+            header button {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="h">Wrinima</div>
+        <button class="o" id="ob">...</button>
+    </header>
+
+    <textarea id="ta" autofocus spellcheck="true" placeholder="¡Escribe! Tus textos se guardarán automáticamente."></textarea>
+
+    <div class="od" id="od">
+        <div class="odc">
+            <h2>Wrinima</h2>
+            <p>Escritura minimalista sin distracciones.</p>
+            <hr>
+            <b id="db">Descargar TXT</b>
+            <b id="fb">+</b>
+            <hr>
+            <h2>Licencia</h2>
+            <p>Wrinima © 2023 por Layionell Stwart Méndez Jiménez está licenciado bajo CC BY-NC-ND 4.0</p>
+            <b id="cb">Cerrar</b>
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+
+        const k = 'NOTE-VALUE'; // Clave para el almacenamiento local
+        const t = document.getElementById('ta'); // Área de texto
+        const o = document.getElementById('ob'); // Botón de opciones
+        const d = document.getElementById('od'); // Cuadro de diálogo de opciones
+        const db = document.getElementById('db'); // Botón de descarga
+        const fb = document.getElementById('fb'); // Botón de pantalla completa
+        const cb = document.getElementById('cb'); // Botón de cerrar cuadro de diálogo
+
+        t.addEventListener('input', c); // Evento de cambio en el área de texto
+        o.addEventListener('click', s); // Evento de clic en el botón de opciones
+        cb.addEventListener('click', h); // Evento de clic en el botón de cerrar
+        db.addEventListener('click', dt); // Evento de clic en el botón de descarga
+        fb.addEventListener('click', tf); // Evento de clic en el botón de pantalla completa
+
+        lt(); // Cargar texto almacenado
+        uh(); // Actualizar altura del área de texto
+
+        function lt() {
+            t.value = localStorage.getItem(k); // Cargar texto almacenado en el área de texto
+        }
+
+        function c() {
+            st(); // Guardar texto en el almacenamiento local
+            uh(); // Actualizar altura del área de texto
+        }
+
+        function st() {
+            const v = t.value; // Obtener el valor del área de texto
+            localStorage.setItem(k, v); // Guardar el valor en el almacenamiento local
+        }
+
+        function uh() {
+            t.style.height = '1px'; // Restablecer altura del área de texto
+            t.style.height = `${t.scrollHeight}px`; // Ajustar altura al contenido
+        }
+
+        function dt() {
+            const v = t.value; // Obtener el valor del área de texto
+            const b = new Blob([v], { type: 'text/plain' }); // Crear un Blob con el contenido de texto
+            const u = URL.createObjectURL(b); // Crear una URL para descargar el Blob
+            const l = document.createElement('a'); // Crear un elemento de enlace
+            const f = 'escrito.txt'; // Nombre del archivo de descarga
+
+            l.href = u; // Establecer la URL de descarga
+            l.download = f; // Establecer el nombre de descarga
+            l.click(); // Simular el clic en el enlace para iniciar la descarga
+
+            URL.revokeObjectURL(u); // Revocar la URL creada
+        }
+
+        function s() {
+            d.classList.add('v'); // Mostrar el cuadro de diálogo de opciones
+        }
+
+        function h() {
+            d.classList.remove('v'); // Ocultar el cuadro de diálogo de opciones
+        }
+
+        function tf() {
+            if (!document.fullscreenElement) {
+                ef(); // Entrar en modo de pantalla completa
+            } else {
+                xf(); // Salir del modo de pantalla completa
+            }
+        }
+
+        function ef() {
+            const e = document.documentElement; // Elemento raíz del documento
+            if (e.requestFullscreen) {
+                e.requestFullscreen(); // Solicitar modo de pantalla completa
+            } else if (e.mozRequestFullScreen) {
+                e.mozRequestFullScreen();
+            } else if (e.webkitRequestFullscreen) {
+                e.webkitRequestFullscreen();
+            } else if (e.msRequestFullscreen) {
+                e.msRequestFullscreen();
+            }
+            fb.textContent = '-'; // Actualizar texto del botón
+        }
+
+        function xf() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen(); // Salir del modo de pantalla completa
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+            fb.textContent = '+'; // Actualizar texto del botón
+        }
+    </script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => {
+              console.log('Service Worker registrado con éxito:', registration);
+            })
+            .catch((error) => {
+              console.log('Error al registrar el Service Worker:', error);
+            });
+        });
+      }
+    </script>
+</body>
+</html>
